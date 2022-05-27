@@ -1,0 +1,26 @@
+/* estilos gerais da aplicação */
+
+* {
+  box-sizing: border-box;
+  --cor-fundo: #F2F2F2;
+  --cor-selected: #CFCFCF;
+  --cor-unselected: #FFFFFF;
+
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  padding: 90px 0 0 0;
+  background-color: var(--cor-fundo);
+  color: var(--preto);
+  font-family: 'Playball';
+}
+
+ion-icon {
+  font-size:  45px;
+  cursor: pointer;
+  margin-top: 3px;
+  
+}
+
