@@ -16,7 +16,7 @@ function Habit({
 
         let DaysComponentes = weeck.map((num, index) =>  
                 <Day isSelected = {days.some((ele) => ele === num)} >
-                    <p>{Letters[num]}</p>
+                    <p>{Letters[num-1]}</p>
                 </Day>
         );
 
@@ -47,6 +47,7 @@ const Habitstyle = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 10px 0 0 0;
 
     h3 {
         font-family: 'Lexend Deca';
@@ -66,8 +67,8 @@ const Day = styled.div`
     height: 30px;
 
     background: ${props => props.isSelected ? 
-    "--cor-selected: #CFCFCF;" : 
-    "white"};
+        "#CFCFCF" : 
+        "white"};
     border: 1px solid #D5D5D5;
     border-radius: 5px;
 
@@ -88,7 +89,6 @@ const Contain = styled.div`
    
     width: 100%;
     height: 100%;
-
     display: flex;
     align-items: center;
 

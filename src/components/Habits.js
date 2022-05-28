@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import UserContext from "../contexts/UserContext";
 
+import UserContext from "../contexts/UserContext";
 import Loading from "./Loading.jsx";
 import Habit from "./Habit"
+import HabitCreator from "./HabitCreator";
 
 function Habits() {
 
@@ -14,7 +15,9 @@ function Habits() {
     const { userImage, token} = useContext(UserContext);
     const [habts, setHabts] = useState([]);
     const [isLoad, setIsLoad] = useState(false);
+    const [isHabitCreatorVisible, setIsHabitCreatorVisible] = useState(false);
 
+    console.log(isHabitCreatorVisible)
     useEffect(() => {
         
         setIsLoad(true);
@@ -51,27 +54,14 @@ function Habits() {
             <Loading/>
           )
         }
-        else if (false){
+        else if (habts.length === 0){
           return (
             <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
           )
         }
-        else if (true){
+        else if (habts.length > 0){
             
-            const fake = [
-                {
-                    id: 1,
-                    name: "Nome do hábito",
-                    days: [1, 3, 5]
-                },
-                {
-                    id: 2,
-                    name: "Nome do hábito 2",
-                    days: [1, 3, 4, 6]
-                }
-            ]
-
-            let HabitsComponentes = fake.map((obj, index) =>  
+            let HabitsComponentes = habts.map((obj, index) =>  
                 <Habit 
                 key={index} 
                 id = {obj.id}
@@ -85,8 +75,8 @@ function Habits() {
       }
 
 
+    const CallContent = CreatContent() 
 
-    const CallContent = CreatContent()  
 
     return (
         <Homee>
@@ -94,7 +84,14 @@ function Habits() {
             <h1>TrackIt</h1>
             <img src={userImage} alt={userImage}></img>
             </Header>
-            <h2>Meus hábitos</h2> <Buttons>Hábitos</Buttons>
+            <Contains>
+                <h2>Meus hábitos</h2> 
+                <Buttons onClick={()=>setIsHabitCreatorVisible(true)}>+</Buttons>
+            </Contains>
+            <HabitCreator 
+            isHabitCreatorVisible={isHabitCreatorVisible}
+            setIsHabitCreatorVisible={setIsHabitCreatorVisible}
+            />
             {CallContent}
             <Footer>
                 <Buttons>Hábitos</Buttons>
@@ -204,4 +201,16 @@ const Buttons = styled.button`
     background-color: var(--cor-yyy);
     margin-bottom: 30px;
   }
+`;
+
+const Contains = styled.div` 
+    
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+
+
+    color: #52B6FF;
+
 `;
