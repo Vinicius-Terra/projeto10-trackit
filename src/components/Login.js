@@ -38,7 +38,7 @@ function Login() {
       setIsLoad(false)
       console.log(res.data);
       localStorage.setItem("token", (res.data.token));
-      setUserImage(res.data.image);
+      localStorage.setItem("userImage", (res.data.image));;
       navigate('/habitos')
     });
 

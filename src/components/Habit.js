@@ -22,12 +22,12 @@ function Habit({
 
     function Days () {
 
-        const weeck = [1,2,3,4,5,6,7]
+        const weeck = [0,1,2,3,4,5,6]
         const Letters = ["D","S","T","Q","Q",'S',"S"]
 
         let DaysComponentes = weeck.map((num, index) =>  
                 <Day key={index} isSelected = {days.some((ele) => ele === num)} >
-                    <p>{Letters[num-1]}</p>
+                    <p>{Letters[num]}</p>
 
                 </Day>
         );

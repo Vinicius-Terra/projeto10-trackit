@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 import UserContext from "../contexts/UserContext";
 import Loading from "./Loading.jsx";
@@ -12,14 +14,16 @@ import HabitCreator from "./HabitCreator";
 function Habits() {
 
     
-    const { userImage} = useContext(UserContext);
+
     const token = localStorage.getItem("token")
+    const userImage = localStorage.getItem("userImage")
     const [habts, setHabts] = useState([]);
     const [isLoad, setIsLoad] = useState(false);
     const [isHabitCreatorVisible, setIsHabitCreatorVisible] = useState(false);
     const [isConfirDeleteVisible, setIsConfirDeleteVisible] = useState(false);
     const [idHabitDelete, setIdHabitDelete] = useState("");
     const [reload, setReload] = useState(false);
+    const [dailyProgress, setDailyProgress] = useState(0);
 
     console.log(isHabitCreatorVisible)
     useEffect(() => {
@@ -27,7 +31,7 @@ function Habits() {
         setIsLoad(true);
         const config = {
             headers: {
-                "Authorization": `Bearer ${token}` 
+                Authorization: `Bearer ${token}` 
             }
         }
         
@@ -46,8 +50,6 @@ function Habits() {
             alert("algo de errado");
 		});
 	}, [reload]);
-
-
 
     function CreatContent () {
 
@@ -160,13 +162,17 @@ function Habits() {
             {CallContent}
             {CallDeleteHabit}
             <Footer>
-                <Link to={`/habitos`}>
-                    <Buttons>Hábitos</Buttons>
+                <BoxLink to={`/habitos`}>
+                    Hábitos
+                </BoxLink>
+                <Link to={`/Hoje`}>
+                <DailyProgressbar>
+                    <CircularProgressbar background={true} backgroundPadding={6} value={dailyProgress} text="Hoje"/>
+                </DailyProgressbar>
                 </Link>
-                <Link to={`/hoje`}>
-                    <Buttons>Hoje</Buttons>
-                </Link>
-                <Buttons>Histórico</Buttons>
+                <BoxLink to={`/historico`}>
+                    Histórico
+                </BoxLink>
             </Footer>
         </Homee>
     )
@@ -176,7 +182,7 @@ export default Habits;
 
 const Homee = styled.div`
 
-    padding: 90px 18px 0 18px;
+    padding: 90px 18px 90px 18px;
     width: 100%;
     height: 100%;
     position: relative;
@@ -338,3 +344,28 @@ const Confirm = styled.div`
     }
 
 `;
+
+const DailyProgressbar = styled.div `
+    margin-bottom: 40px;
+    height: 90px;
+    width: 90px;
+    .CircularProgressbar-path {
+        stroke: #FFFFFF;
+    }
+    .CircularProgressbar-trail {
+        stroke: #52B6FF;
+    }
+    .CircularProgressbar-text {
+        fill: #FFFFFF;
+    }
+    .CircularProgressbar-background {
+        fill: #52B6FF;
+    }
+`;
+
+const BoxLink = styled(Link) `
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 18px;
+    text-decoration: none;
+    color: #52B6FF;
+`

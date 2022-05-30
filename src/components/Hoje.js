@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import "dayjs/locale/pt-br";
 
 import UserContext from "../contexts/UserContext";
@@ -13,7 +15,7 @@ import HabitToday from "./HabitToday"
 function Hoje() {
 
     
-    const { userImage} = useContext(UserContext);
+    const userImage = localStorage.getItem("userImage")
     const token = localStorage.getItem("token")
     const [habts, setHabts] = useState([]);
     const [isLoad, setIsLoad] = useState(false);
@@ -44,6 +46,7 @@ function Hoje() {
             setHabts(res.data);
             setIsLoad(false);
 
+
 		});
 
         request.catch(res => {
@@ -53,12 +56,14 @@ function Hoje() {
 		});
 	}, []);
 
-
-
+    useEffect(() => {
+        daylyProgresSeter ()
+        HabitsPorcent ()
+    }, [habts]);
 
     function CreatContent () {
 
-
+        console.log(habts.length)
         if (isLoad){
           return (
             <Loading/>
@@ -95,30 +100,26 @@ function Hoje() {
 
         console.log(dailyProgress)
 
-        if (dailyProgress === 0) {
+
+        if (dailyProgress === 0 ) {
             return (
                 <TopBar>
-                    <h2>{currentDate.charAt(0).toUpperCase() + currentDate.slice(1)}</h2>
                     <p>Nenhum hábito concluído ainda</p>
                 </TopBar>
         )} else {
             return (
                 <TopBar progress={true}>
-                    <h2>{currentDate.charAt(0).toUpperCase() + currentDate.slice(1)}</h2>
                     <p>{dailyProgress}% dos hábitos concluídos</p>
                 </TopBar>
         )}
 
       }
 
+
+
       function daylyProgresSeter () {
 
-        let done = habts.filter((obj)=> obj.done === true)
-
-        let porcentage = done.length
-        console.log(porcentage)
-        setDailyProgress(porcentage)
-
+        
         const finishedHabitsCounter = habts.filter((habit) => habit.done === true).length;
         const progress = Math.ceil(finishedHabitsCounter / habts.length * 100);
 
@@ -146,8 +147,9 @@ function Hoje() {
 
         habit.done = !habit.done;
 
-        daylyProgresSeter(newDailyHabits);
         setHabts(newDailyHabits);
+        daylyProgresSeter(newDailyHabits);
+        
     }
 
 
@@ -167,15 +169,21 @@ return (
             <h2>{currentDate}</h2> 
             <h2>{TodayHabitsPorcent}</h2> 
         </Contains>
-        {CallContent}
+        <Contains2>
+            {CallContent}
+        </Contains2>
         <Footer>
-            <Link to={`/habitos`}>
-                <Buttons>Hábitos</Buttons>
-            </Link>
+            <BoxLink to={`/habitos`}>
+                Hábitos
+            </BoxLink>
             <Link to={`/Hoje`}>
-                <Buttons>Hoje</Buttons>
+            <DailyProgressbar>
+            <CircularProgressbar background={true} backgroundPadding={6} value={dailyProgress} text="Hoje"/>
+            </DailyProgressbar>
             </Link>
-            <Buttons>Histórico</Buttons>
+            <BoxLink to={`/historico`}>
+                Histórico
+            </BoxLink>
         </Footer>
     </Homee>
 )
@@ -185,14 +193,14 @@ export default Hoje;
 
 const Homee = styled.div`
     width: 100%;
-    height: 91px;
+    height: 100px;
     background: #FFFFFF;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 10px 0 0 0;
+    padding: 150px 0 0 0;
 
     h3 {
         font-family: 'Lexend Deca';
@@ -216,7 +224,6 @@ background-color: white;
 z-index: 1;
 width: 100%;
 height: 70px;
-position: fixed;
 
 display: flex;
 justify-content: space-around;
@@ -245,7 +252,6 @@ right: 0;
 z-index: 1;
 width: 100%;
 height: 70px;
-position: fixed;
 
 background: #126BA5;
 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
@@ -276,6 +282,8 @@ img {
 
 `;
 
+
+
 const Buttons = styled.button` 
 
 width: 68px;
@@ -299,7 +307,7 @@ margin-bottom: 30px;
 
 const Contains = styled.div` 
 
-margin-top: 160px;
+
 width: 100%;
 height: 100%;
 display: flex;
@@ -309,7 +317,18 @@ justify-content: space-between;
 color: #52B6FF;
 
 `;
+const Contains2 = styled.div` 
 
+margin-top: 50px;
+width: 100%;
+height: 100%;
+display: flex;
+justify-content: space-between;
+
+
+color: #52B6FF;
+
+`;
 const Blur = styled.div` 
 
 width: 100%;
@@ -349,22 +368,52 @@ button {
 
 const TopBar = styled.div `
     width: 100%;
+    height: 200px;
+    margin-bottom: 80px;
     font-family: 'Lexend Deca', sans-serif;
+    margin-bottom:50px;
+
     h2 {
         font-size: 22px;
         line-height: 30px;
         color: #126BA5;
+        
     }
     p {
         font-size: 18px;
         line-height: 22px;
-        color: ${props => props.progress ? "#8FC549" : "#BABABA" }
+        color: ${props => props.progress ? "#8FC549" : "#BABABA" };
+        margin-bottom:50px;
     }
-`
+`;
 const UserDailyHabitsList = styled.div `
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 26px;
     width: 100%;
+`;
+const DailyProgressbar = styled.div `
+    margin-bottom: 40px;
+    height: 90px;
+    width: 90px;
+    .CircularProgressbar-path {
+        stroke: #FFFFFF;
+    }
+    .CircularProgressbar-trail {
+        stroke: #52B6FF;
+    }
+    .CircularProgressbar-text {
+        fill: #FFFFFF;
+    }
+    .CircularProgressbar-background {
+        fill: #52B6FF;
+    }
+`;
+
+const BoxLink = styled(Link) `
+    font-family: 'Lexend Deca', sans-serif;
+    font-size: 18px;
+    text-decoration: none;
+    color: #52B6FF;
 `

@@ -108,17 +108,21 @@ function HabitCreator({
                 required disabled={isLoad}/>
             </div>
             <Contain>
+                <Day isSelected = {days.some((ele) => ele === 0)} 
+                    onClick={()=>ToogleMe(0)} disabled={isLoad}>
+                    <p>D</p>
+                </Day>
                 <Day isSelected = {days.some((ele) => ele === 1)} 
                     onClick={()=>ToogleMe(1)} disabled={isLoad}>
-                    <p>D</p>
+                    <p>S</p>
                 </Day>
                 <Day isSelected = {days.some((ele) => ele === 2)} 
                     onClick={()=>ToogleMe(2)} disabled={isLoad}>
-                    <p>S</p>
+                    <p>T</p>
                 </Day>
                 <Day isSelected = {days.some((ele) => ele === 3)} 
                     onClick={()=>ToogleMe(3)} disabled={isLoad}>
-                    <p>T</p>
+                    <p>Q</p>
                 </Day>
                 <Day isSelected = {days.some((ele) => ele === 4)} 
                     onClick={()=>ToogleMe(4)} disabled={isLoad}>
@@ -126,14 +130,10 @@ function HabitCreator({
                 </Day>
                 <Day isSelected = {days.some((ele) => ele === 5)} 
                     onClick={()=>ToogleMe(5)} disabled={isLoad}>
-                    <p>Q</p>
+                    <p>S</p>
                 </Day>
                 <Day isSelected = {days.some((ele) => ele === 6)} 
                     onClick={()=>ToogleMe(6)} disabled={isLoad}>
-                    <p>S</p>
-                </Day>
-                <Day isSelected = {days.some((ele) => ele === 7)} 
-                    onClick={()=>ToogleMe(7)} disabled={isLoad}>
                     <p>S</p>
                 </Day>
              
@@ -182,7 +182,7 @@ const HabitCreatorStyle = styled.div`
     align-items: center;
 
     input {
-        width: 303px;
+        width: 100%;
         height: 45px;
 
         background: #FFFFFF;
@@ -233,7 +233,7 @@ p {
     font-weight: 400;
     font-size: 20px;
     line-height: 25px;
-    margin-bottom: 26px;
+
 
     color: ${props => props.isSelected ? 
         "#FFFFFF;" : 
