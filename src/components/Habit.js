@@ -1,13 +1,24 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import React from 'react'
+import { render } from 'react-dom'
+import {  Trash } from 'react-ionicons'
+
 
 function Habit({
     id ,
     name,
     days,
+    setIsConfirDeleteVisible,
+    setIdHabitDelete
     }){ 
 
 
+    function ToDelete () {
+
+        setIdHabitDelete(id)
+        setIsConfirDeleteVisible(true)
+    }
 
     function Days () {
 
@@ -15,8 +26,9 @@ function Habit({
         const Letters = ["D","S","T","Q","Q",'S',"S"]
 
         let DaysComponentes = weeck.map((num, index) =>  
-                <Day isSelected = {days.some((ele) => ele === num)} >
+                <Day key={index} isSelected = {days.some((ele) => ele === num)} >
                     <p>{Letters[num-1]}</p>
+
                 </Day>
         );
 
@@ -29,7 +41,15 @@ function Habit({
     return (
         <>
             <Habitstyle>
-                <h3>{name}</h3>
+                <Contain>
+                    <h3>{name}</h3>
+                    <Trash
+                    color={'#00000'}
+                    height="30px"
+                    width="20px"
+                    onClick={()=>ToDelete()}
+                    />
+                </Contain>
                 {CallDays}
             </Habitstyle>
         </>
@@ -40,6 +60,8 @@ function Habit({
 export default Habit;
 
 const Habitstyle = styled.div`
+    
+
     width: 100%;
     height: 91px;
     background: #FFFFFF;
@@ -47,6 +69,7 @@ const Habitstyle = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     margin: 10px 0 0 0;
 
     h3 {
@@ -87,9 +110,31 @@ p {
 
 const Contain = styled.div`
    
+   
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
 
+`;
+
+const Buttons = styled.button` 
+    
+    width: 68px;
+    height: 22px;
+
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17.976px;
+    line-height: 22px;
+    text-align: center;
+
+
+    color: #52B6FF;
+
+    button:hover {
+    background-color: var(--cor-yyy);
+    margin-bottom: 30px;
+  }
 `;

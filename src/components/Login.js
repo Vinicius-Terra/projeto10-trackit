@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import UserContext from "../contexts/UserContext";
 
+import logo from "../assets/images/logo.png"
 import Loading from "./Loading.jsx";
 
 
@@ -16,10 +17,10 @@ function Login() {
   const [isLoad, setIsLoad] = useState(false);
   const navigate = useNavigate();
 
-  const { setUserImage, setToken} = useContext(UserContext);
+  const { setUserImage} = useContext(UserContext);
 
   function login(event) {
-    // faz o login e armazene o token no estado token
+    // faz o login e armazene o token no local storage
 
     event.preventDefault();
 
@@ -36,7 +37,7 @@ function Login() {
     promise.then((res) => {
       setIsLoad(false)
       console.log(res.data);
-      setToken(res.data.token);
+      localStorage.setItem("token", (res.data.token));
       setUserImage(res.data.image);
       navigate('/habitos')
     });
@@ -68,15 +69,14 @@ function Login() {
 
   return (
     <Homee>
+      <img src={logo} alt={"logo"}></img>
       <form onSubmit={login}>
         <div>
-          <h5>Nome do comprador:</h5>
           <input type="email" value={email} placeholder="email"
             onChange={e => setEmail(e.target.value) } 
             required disabled={isLoad}/>
         </div>
         <div>
-          <h5>CPF do comprador:</h5>
           <input type="text" value={password} placeholder="senha"
           onChange={e => setPassword(e.target.value)} 
           required disabled={isLoad}/>
@@ -94,18 +94,12 @@ export default Login;
 
 const Homee = styled.div`
   width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  z-index: 1;
-  position: absolute;
   background-color: white;
-
-  margin-bottom: 30px; 
 
  h1 {
   font-family: 'Playball';
@@ -120,27 +114,55 @@ const Homee = styled.div`
 }
 
   img {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     margin-bottom: 10px;
   }
 
- button {
-    width: 246px;
-    height: 54px; 
-    padding: 16px 22px;
+  input {
+    width: 303px;
+    height: 45px;
+
+    background: #FFFFFF;
+    border: 1px solid #D5D5D5;
     border-radius: 5px;
-    color: var(--cor-fundo);
+
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 25px;
+    color: #DBDBDB;
+
+    margin-bottom: 6px;
+  }
+
+
+ button {
+    width: 303px;
+    height: 45px;
+
+    background: #52B6FF;
+    border-radius: 4.63636px;
     border: 1px;
     font-size: 22px;
     cursor: pointer;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     font-family: "Righteous", cursive;
+
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 26px;
+    text-align: center;
+
+    color: #FFFFFF;
   }
 
   button:hover {
     background-color: var(--cor-yyy);
-    margin-bottom: 30px;
+    margin-bottom: 25px;
   }
 `;
