@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import styled from 'styled-components';
 import { useContext, useState, useEffect } from "react";
 import axios from "axios";
+import dayjs from "dayjs";
+import "dayjs/locale/pt-br";
 
 import UserContext from "../contexts/UserContext";
 import Loading from "./Loading.jsx";
@@ -15,6 +17,10 @@ function Hoje() {
     const token = localStorage.getItem("token")
     const [habts, setHabts] = useState([]);
     const [isLoad, setIsLoad] = useState(false);
+    const [dailyProgress, setDailyProgress] = useState(0);
+
+    
+    const currentDate = dayjs().locale('pt-br').format("dddd, D/MM");
 
     console.log(token)
 
@@ -37,6 +43,7 @@ function Hoje() {
             console.log(res);
             setHabts(res.data);
             setIsLoad(false);
+
 		});
 
         request.catch(res => {
@@ -72,23 +79,82 @@ function Hoje() {
                 done= {obj.done}
                 currentSequence= {obj.currentSequence} 
                 highestSequence = {obj.highestSequence}
+                changeHabitStaus={() => changeHabitStaus(index)}
                 />
                 );
 
-            return ([HabitsComponentes])
+            return (                
+            <UserDailyHabitsList>
+                {HabitsComponentes}
+            </UserDailyHabitsList>)
           }
     
       }
 
+      function HabitsPorcent () {
 
+        console.log(dailyProgress)
 
+        if (dailyProgress === 0) {
+            return (
+                <TopBar>
+                    <h2>{currentDate.charAt(0).toUpperCase() + currentDate.slice(1)}</h2>
+                    <p>Nenhum hábito concluído ainda</p>
+                </TopBar>
+        )} else {
+            return (
+                <TopBar progress={true}>
+                    <h2>{currentDate.charAt(0).toUpperCase() + currentDate.slice(1)}</h2>
+                    <p>{dailyProgress}% dos hábitos concluídos</p>
+                </TopBar>
+        )}
 
+      }
 
+      function daylyProgresSeter () {
 
+        let done = habts.filter((obj)=> obj.done === true)
+
+        let porcentage = done.length
+        console.log(porcentage)
+        setDailyProgress(porcentage)
+
+        const finishedHabitsCounter = habts.filter((habit) => habit.done === true).length;
+        const progress = Math.ceil(finishedHabitsCounter / habts.length * 100);
+
+        setDailyProgress(progress);
+
+      }
+
+      function changeHabitStaus(index) {
+        const newDailyHabits = [...habts];
+        const habit = newDailyHabits[index];
+
+        if (habit.done) {
+            const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habit.id}/uncheck`;
+            axios.post(URL, {}, {
+                headers: {Authorization: `Bearer ${token}`}
+            })
+            habit.currentSequence -= 1;
+        } else {
+            const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${habit.id}/check`;
+            axios.post(URL, {}, {
+                headers: {Authorization: `Bearer ${token}`}
+            })
+            habit.currentSequence += 1;
+        }
+
+        habit.done = !habit.done;
+
+        daylyProgresSeter(newDailyHabits);
+        setHabts(newDailyHabits);
+    }
 
 
 
 const CallContent = CreatContent() 
+const TodayHabitsPorcent = HabitsPorcent()
+
 
 
 return (
@@ -98,7 +164,8 @@ return (
         <img src={userImage} alt={userImage}></img>
         </Header>
         <Contains>
-            <h2>Meus hábitos</h2> 
+            <h2>{currentDate}</h2> 
+            <h2>{TodayHabitsPorcent}</h2> 
         </Contains>
         {CallContent}
         <Footer>
@@ -117,11 +184,26 @@ return (
 export default Hoje;
 
 const Homee = styled.div`
-width: 100%;
-height: 100%;
-position: relative;
-background-color:  #E5E5E5;
+    width: 100%;
+    height: 91px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 0 0;
 
+    h3 {
+        font-family: 'Lexend Deca';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 25px;
+
+        color: #666666;
+        margin: 0 0 8px 0;
+    }
 
 `;
 const Footer = styled.div`
@@ -217,6 +299,7 @@ margin-bottom: 30px;
 
 const Contains = styled.div` 
 
+margin-top: 160px;
 width: 100%;
 height: 100%;
 display: flex;
@@ -263,3 +346,25 @@ button {
 }
 
 `;
+
+const TopBar = styled.div `
+    width: 100%;
+    font-family: 'Lexend Deca', sans-serif;
+    h2 {
+        font-size: 22px;
+        line-height: 30px;
+        color: #126BA5;
+    }
+    p {
+        font-size: 18px;
+        line-height: 22px;
+        color: ${props => props.progress ? "#8FC549" : "#BABABA" }
+    }
+`
+const UserDailyHabitsList = styled.div `
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 26px;
+    width: 100%;
+`

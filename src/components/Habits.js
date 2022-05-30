@@ -182,9 +182,6 @@ const Homee = styled.div`
     position: relative;
     background-color:  #F2F2F2;
 
-    p {
-        margin-top: 28px ;
-    }
 
 
 `;

@@ -1,90 +1,65 @@
-import { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import React from 'react'
-import {  Trash } from 'react-ionicons'
+import styled from "styled-components";
 
-
-function HabitToday({
+export default function HabitToday ({
+    id,
     name,
     done,
     currentSequence,
-    highestSequence
-    }){ 
+    highestSequence,
+    changeHabitStaus
+}) {
 
-
+    const newHighestSequence = currentSequence >= highestSequence && done;
 
     return (
-        <>
-            <Habitstyle>
-                <Contain>
-                    <h3>{name}</h3>
-                    <p>{currentSequence}</p>
-                    <p>{highestSequence}</p>
-                </Contain>
-            </Habitstyle>
-        </>
-        );
-    
+        <Habit>
+            <HabitInfo>
+                <h3>{name}</h3>
+                <div>
+                    <p>Sequência atual: <Sequence checked={done} >{currentSequence}</Sequence ></p>
+                    <p>Seu recorde: <Sequence newHighestSequence={newHighestSequence} >{highestSequence}</Sequence ></p>
+                </div>
+            </HabitInfo>
+            <Checkbox checked={done}>
+                <ion-icon name="checkbox" onClick={changeHabitStaus} ></ion-icon>
+            </Checkbox>
+        </Habit>
+    )
 }
 
-export default HabitToday;
-
-const Habitstyle = styled.div`
-    width: 100%;
-    height: 91px;
-    background: #FFFFFF;
+const Habit = styled.div `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 5px;
+    padding: 6px 6px 6px 12px;
+    width: 100%;
+    font-family: 'Lexend Deca', sans-serif;
+    background-color: #FFFFFF;
+`
+
+const HabitInfo = styled.div `
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 10px 0 0 0;
-
+    gap: 12px;
+    color: #666666;
     h3 {
-        font-family: 'Lexend Deca';
-        font-style: normal;
-        font-weight: 400;
         font-size: 20px;
-        line-height: 25px;
-
-        color: #666666;
-        margin: 0 0 8px 0;
     }
-`;
-
-
-const Contain = styled.div`
-   
-    width: 100%;
-    height: 100%;
-    display: flex;
-
     p {
-        font-family: 'Lexend Deca';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 13px;
-        line-height: 16px;
+        font-size: 14px;
     }
+`
 
-`;
+const Sequence = styled.span `
+    color: ${props => (props.checked || props.newHighestSequence) ? "#8FC549" : "#666666" }
+`
 
-const Buttons = styled.button` 
-    
-    width: 68px;
-    height: 22px;
-
-    font-family: 'Lexend Deca';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 17.976px;
-    line-height: 22px;
-    text-align: center;
-
-
-    color: #52B6FF;
-
-    button:hover {
-    background-color: var(--cor-yyy);
-    margin-bottom: 30px;
-  }
-`;
+const Checkbox = styled.div `
+    ion-icon {
+        height: 86px;
+        min-width: 86px;
+        color: ${props => props.checked ? "#8FC549" : "#EBEBEB" };
+        cursor: pointer;
+    }
+`
